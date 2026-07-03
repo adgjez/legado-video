@@ -175,6 +175,16 @@
     <string name="video_gen_progress_storyboard">Building storyboard…</string>
     <string name="video_gen_progress_shots">Generating shots (%1$d/%2$d)</string>
     <string name="video_gen_progress_compose">Composing video…</string>
+    <string name="video_gen_setting">Video Generation</string>
+    <string name="video_gen_setting_s">AI video generation from book content</string>
+    <string name="video_gen_api_key_s">Cloud AI key for storyboard / image / video</string>
+    <string name="video_gen_base_url_s">OpenAI-compatible endpoint</string>
+    <string name="video_gen_provider_s">Select AI provider (default Agnes)</string>
+    <string name="video_gen_image_size_s">Resolution of generated key frames</string>
+    <string name="video_gen_concurrency_s">Parallel shot generation count</string>
+    <string name="video_gen_target_duration_s">Approx total length of final video</string>
+    <string name="video_gen_concurrency_summary">Concurrent shot tasks: %1$s</string>
+    <string name="video_gen_target_duration_summary">Target seconds: %1$s</string>
     <string name="text_return">Back</string>
     <string name="refresh">Refresh</string>
     <string name="start">Start</string>

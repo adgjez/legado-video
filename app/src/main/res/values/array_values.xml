@@ -63,4 +63,14 @@
         <item>en</item>
     </string-array>
 
+    <string-array name="video_gen_provider_value">
+        <item>agnes</item>
+    </string-array>
+
+    <string-array name="video_gen_image_size_value">
+        <item>1024x1024</item>
+        <item>1280x720</item>
+        <item>1920x1080</item>
+    </string-array>
+
 </resources>

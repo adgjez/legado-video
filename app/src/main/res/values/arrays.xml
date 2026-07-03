@@ -208,4 +208,14 @@
 		<item>Customize</item>
 	</string-array>
 
+	<string-array name="video_gen_provider">
+		<item>Agnes</item>
+	</string-array>
+
+	<string-array name="video_gen_image_size">
+		<item>1024x1024</item>
+		<item>1280x720</item>
+		<item>1920x1080</item>
+	</string-array>
+
 </resources>

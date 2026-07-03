@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <io.legado.app.lib.prefs.PreferenceCategory
+        android:title="@string/video_gen_config"
+        app:allowDividerAbove="false"
+        app:allowDividerBelow="false"
+        app:iconSpaceReserved="false"
+        app:layout="@layout/view_preference_category">
+
+        <io.legado.app.lib.prefs.EditTextPreference
+            android:key="agnesApiKey"
+            android:summary="@string/video_gen_api_key_s"
+            android:title="@string/video_gen_agnes_api_key"
+            app:iconSpaceReserved="false" />
+
+        <io.legado.app.lib.prefs.EditTextPreference
+            android:defaultValue="https://api.agnes-ai.com/v1"
+            android:key="agnesBaseUrl"
+            android:summary="@string/video_gen_base_url_s"
+            android:title="@string/video_gen_agnes_base_url"
+            app:iconSpaceReserved="false" />
+
+        <io.legado.app.lib.prefs.NameListPreference
+            android:defaultValue="agnes"
+            android:entries="@array/video_gen_provider"
+            android:entryValues="@array/video_gen_provider_value"
+            android:key="videoGenProvider"
+            android:summary="@string/video_gen_provider_s"
+            android:title="@string/video_gen_provider"
+            app:iconSpaceReserved="false" />
+
+        <io.legado.app.lib.prefs.NameListPreference
+            android:defaultValue="1280x720"
+            android:entries="@array/video_gen_image_size"
+            android:entryValues="@array/video_gen_image_size_value"
+            android:key="videoGenImageSize"
+            android:summary="@string/video_gen_image_size_s"
+            android:title="@string/video_gen_image_size"
+            app:iconSpaceReserved="false" />
+
+        <io.legado.app.lib.prefs.Preference
+            android:key="videoGenConcurrency"
+            android:summary="@string/video_gen_concurrency_s"
+            android:title="@string/video_gen_concurrency"
+            app:iconSpaceReserved="false" />
+
+        <io.legado.app.lib.prefs.Preference
+            android:key="videoGenTargetDuration"
+            android:summary="@string/video_gen_target_duration_s"
+            android:title="@string/video_gen_target_duration"
+            app:allowDividerBelow="false"
+            app:iconSpaceReserved="false" />
+
+    </io.legado.app.lib.prefs.PreferenceCategory>
+
+</androidx.preference.PreferenceScreen>

@@ -79,6 +79,14 @@
             app:allowDividerBelow="false"
             app:iconSpaceReserved="false" />
 
+        <io.legado.app.lib.prefs.Preference
+            android:icon="@drawable/ic_image"
+            android:key="video_gen_setting"
+            android:summary="@string/video_gen_setting_s"
+            android:title="@string/video_gen_setting"
+            app:allowDividerBelow="false"
+            app:iconSpaceReserved="false" />
+
     </io.legado.app.lib.prefs.PreferenceCategory>
 
     <io.legado.app.lib.prefs.PreferenceCategory

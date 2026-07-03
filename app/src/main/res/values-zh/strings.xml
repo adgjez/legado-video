@@ -174,6 +174,16 @@
     <string name="video_gen_progress_storyboard">正在生成分镜…</string>
     <string name="video_gen_progress_shots">正在生成镜头 (%1$d/%2$d)</string>
     <string name="video_gen_progress_compose">正在合成视频…</string>
+    <string name="video_gen_setting">视频生成</string>
+    <string name="video_gen_setting_s">基于书籍内容用 AI 生成视频</string>
+    <string name="video_gen_api_key_s">用于分镜/图片/视频的云端 AI 密钥</string>
+    <string name="video_gen_base_url_s">OpenAI 兼容接口地址</string>
+    <string name="video_gen_provider_s">选择 AI 服务商（默认 Agnes）</string>
+    <string name="video_gen_image_size_s">生成关键帧的分辨率</string>
+    <string name="video_gen_concurrency_s">镜头并行生成数量</string>
+    <string name="video_gen_target_duration_s">最终视频的总时长（约）</string>
+    <string name="video_gen_concurrency_summary">并行镜头数：%1$s</string>
+    <string name="video_gen_target_duration_summary">目标秒数：%1$s</string>
     <string name="text_return">返回</string>
     <string name="refresh">刷新</string>
     <string name="start">开始</string>

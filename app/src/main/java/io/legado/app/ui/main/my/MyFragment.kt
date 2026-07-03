@@ -161,6 +161,10 @@ class MyFragment() : BaseFragment(R.layout.fragment_my_config), MainFragmentInte
                     putExtra("configTag", ConfigTag.THEME_CONFIG)
                 }
 
+                "video_gen_setting" -> startActivity<ConfigActivity> {
+                    putExtra("configTag", ConfigTag.VIDEO_CONFIG)
+                }
+
                 "fileManage" -> startActivity<FileManageActivity>()
                 "readRecord" -> startActivity<ReadRecordActivity>()
                 "about" -> startActivity<AboutActivity>()
