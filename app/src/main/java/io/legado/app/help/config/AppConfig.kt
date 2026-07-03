@@ -446,6 +446,43 @@ object AppConfig : SharedPreferences.OnSharedPreferenceChangeListener {
             appCtx.putPrefString(PreferKey.ttsEngine, value)
         }
 
+    // 视频生成
+    var agnesApiKey: String?
+        get() = appCtx.getPrefString(PreferKey.agnesApiKey)
+        set(value) {
+            appCtx.putPrefString(PreferKey.agnesApiKey, value)
+        }
+
+    var agnesBaseUrl: String
+        get() = appCtx.getPrefString(PreferKey.agnesBaseUrl, "https://api.agnes-ai.com/v1")
+        set(value) {
+            appCtx.putPrefString(PreferKey.agnesBaseUrl, value)
+        }
+
+    var videoGenProvider: String
+        get() = appCtx.getPrefString(PreferKey.videoGenProvider, "agnes")
+        set(value) {
+            appCtx.putPrefString(PreferKey.videoGenProvider, value)
+        }
+
+    var videoGenImageSize: String
+        get() = appCtx.getPrefString(PreferKey.videoGenImageSize, "1280x720")
+        set(value) {
+            appCtx.putPrefString(PreferKey.videoGenImageSize, value)
+        }
+
+    var videoGenConcurrency: Int
+        get() = appCtx.getPrefInt(PreferKey.videoGenConcurrency, 2)
+        set(value) {
+            appCtx.putPrefInt(PreferKey.videoGenConcurrency, value)
+        }
+
+    var videoGenTargetDuration: Int
+        get() = appCtx.getPrefInt(PreferKey.videoGenTargetDuration, 30)
+        set(value) {
+            appCtx.putPrefInt(PreferKey.videoGenTargetDuration, value)
+        }
+
     var webPort: Int
         get() = appCtx.getPrefInt(PreferKey.webPort, 1122)
         set(value) {
