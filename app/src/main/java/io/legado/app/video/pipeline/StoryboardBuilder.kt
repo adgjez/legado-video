@@ -65,13 +65,26 @@ class StoryboardBuilder(
         throw lastErr ?: IllegalStateException("分镜表生成失败：无法解析 LLM 输出")
     }
 
-    /** 从 LLM 输出解析分镜表，失败返回 null */
+    /** 从 LLM 输出解析分镜表，多策略降级 */
     internal fun parse(resp: String): Storyboard? {
-        val cleaned = stripCodeFence(resp).trim()
-        if (cleaned.isEmpty()) return null
-        val sb = Storyboard.fromJson(cleaned).getOrNull() ?: return null
+        var text = stripCodeFence(resp).trim()
+        if (text.isEmpty()) return null
+
+        // 策略1：直接解析
+        tryParse(text)?.let { return it }
+
+        // 策略2：提取第一个 { 到最后一个 } 之间的 JSON 块
+        val first = text.indexOf('{')
+        val last = text.lastIndexOf('}')
+        if (first >= 0 && last > first) {
+            tryParse(text.substring(first, last + 1))?.let { return it }
+        }
+        return null
+    }
+
+    private fun tryParse(json: String): Storyboard? {
+        val sb = Storyboard.fromJson(json).getOrNull() ?: return null
         if (sb.shots.isEmpty()) return null
-        // 规整 index
         sb.shots.forEachIndexed { i, s -> s.index = i }
         return sb
     }

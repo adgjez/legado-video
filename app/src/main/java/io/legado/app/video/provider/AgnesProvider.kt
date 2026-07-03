@@ -52,25 +52,24 @@ class AgnesProvider(
     ): String {
         requireKey()
         val arr = com.google.gson.JsonArray()
-        // 若要求 JSON 输出，先放 system 约束消息
-        if (jsonSchema != null) {
-            arr.add(JsonObject().apply {
-                addProperty("role", "system")
-                addProperty("content", "严格按 JSON 格式输出，不要 markdown 代码块。Schema: $jsonSchema")
-            })
-        }
-        messages.forEach { m ->
+        messages.forEachIndexed { i, m ->
+            val content = if (jsonSchema != null && m.role == "system" && i == messages.indexOfFirst { it.role == "system" }) {
+                // 将 JSON 约束合并到第一个 system 消息，避免两个 system 消息让 LLM 混淆
+                "严格按 JSON 格式输出，不要 markdown 代码块。Schema: $jsonSchema\n\n${m.content}"
+            } else {
+                m.content
+            }
             arr.add(JsonObject().apply {
                 addProperty("role", m.role)
-                addProperty("content", m.content)
+                addProperty("content", content)
             })
         }
         val body = JsonObject().apply {
             addProperty("model", model ?: MODEL_LLM)
+            add("messages", arr)
             if (jsonSchema != null) {
                 add("response_format", JsonObject().apply { addProperty("type", "json_object") })
             }
-            add("messages", arr)
         }
         val resp = postJson(url("/chat/completions"), body.toString())
         return parseChatContent(resp)
