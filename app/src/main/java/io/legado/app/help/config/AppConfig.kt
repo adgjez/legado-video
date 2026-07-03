@@ -454,8 +454,8 @@ object AppConfig : SharedPreferences.OnSharedPreferenceChangeListener {
         }
 
     var agnesBaseUrl: String
-        get() = appCtx.getPrefString(PreferKey.agnesBaseUrl, "https://api.agnes-ai.com/v1")
-            ?: "https://api.agnes-ai.com/v1"
+        get() = appCtx.getPrefString(PreferKey.agnesBaseUrl, "https://apihub.agnes-ai.com/v1")
+            ?: "https://apihub.agnes-ai.com/v1"
         set(value) {
             appCtx.putPrefString(PreferKey.agnesBaseUrl, value)
         }

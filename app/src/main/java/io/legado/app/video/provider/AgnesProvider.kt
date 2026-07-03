@@ -12,15 +12,15 @@ import okhttp3.RequestBody.Companion.toRequestBody
  * Agnes AI Provider 实现。
  *
  * - API 兼容 OpenAI 格式
- * - base_url 默认 https://api.agnes-ai.com/v1
+ * - base_url 默认 https://apihub.agnes-ai.com/v1（官方 CLI 默认）
  * - 认证：Authorization: Bearer <API_KEY>
  * - 模型：agnes-2.0-flash（文本）/ agnes-image-2.1-flash（图）/ agnes-video-v2.0（视频）
  *
  * 视频生成是异步任务模式：提交拿 task_id → 轮询状态 → 取结果 URL。
- * Agnes 官方未公布完整的视频异步接口字段，本实现按通用形态实现：
- *   POST /v1/videos/generations 提交 → 返回 {id/task_id}
- *   GET  /v1/videos/{id} 轮询 → 返回 {status, video/url, error}
- * 字段名做兼容尝试（id|task_id、status、video|url|output_url）。
+ *   POST /v1/videos 提交 → 返回 {id/task_id/video_id}
+ *   GET  /agnesapi?video_id=<id>&model_name=<model> 轮询（主）
+ *   GET  /v1/videos/{id} 轮询（降级，兼容旧任务）
+ * 结果 URL 字段：url | remixed_from_video_id | video | output_url
  */
 class AgnesProvider(
     private val baseUrl: String,
@@ -95,29 +95,33 @@ class AgnesProvider(
         onPoll: ((elapsedSec: Int) -> Unit)?
     ): String {
         requireKey()
+        // Agnes 视频用 num_frames/frame_rate 控制时长，非 duration。
+        // 帧数需满足 8n+1，≤441；24FPS 下 ≤15s（官方建议）。
+        val (numFrames, frameRate) = durationToFrames(durationMs)
         val body = JsonObject().apply {
             addProperty("model", model ?: MODEL_VIDEO)
             addProperty("prompt", prompt)
-            addProperty("duration", durationMs / 1000) // 秒
+            addProperty("num_frames", numFrames)
+            addProperty("frame_rate", frameRate)
             if (!imageUrl.isNullOrBlank()) {
-                add("image", com.google.gson.JsonArray().apply { add(imageUrl) })
+                addProperty("image", imageUrl)
             }
         }
-        val submitResp = postJson(url("/videos/generations"), body.toString())
+        val submitResp = postJson(url("/videos"), body.toString())
         val taskId = parseVideoTaskId(submitResp)
             ?: throw IllegalStateException("视频任务提交失败：无 task id。响应: $submitResp")
 
         // 任务可能同步返回结果
         parseVideoUrl(submitResp)?.let { return it }
 
-        // 轮询
+        // 轮询：优先 /agnesapi，失败降级 /v1/videos/{id}
         var elapsed = 0
         val intervalSec = POLL_INTERVAL_SEC
         while (elapsed < POLL_TIMEOUT_SEC) {
             delay(intervalSec * 1000L)
             elapsed += intervalSec
             onPoll?.invoke(elapsed)
-            val statusResp = getJson(url("/videos/$taskId"))
+            val statusResp = fetchVideoStatus(taskId)
             val status = parseVideoStatus(statusResp)
             when (status) {
                 "succeeded", "completed", "success" -> {
@@ -131,6 +135,16 @@ class AgnesProvider(
             }
         }
         throw IllegalStateException("视频任务轮询超时（${POLL_TIMEOUT_SEC}s）")
+    }
+
+    /** 时长（ms）→ (num_frames, frame_rate)。帧数满足 8n+1 且 ≤441，24FPS ≤15s */
+    private fun durationToFrames(durationMs: Int): Pair<Int, Int> {
+        val frameRate = 24
+        val durationSec = (durationMs / 1000).coerceIn(1, 15)
+        val raw = durationSec * frameRate
+        val n = (raw + 6) / 8
+        val numFrames = (n * 8 + 1).coerceAtMost(441)
+        return numFrames to frameRate
     }
 
     // ===== HTTP =====
@@ -169,6 +183,21 @@ class AgnesProvider(
         return kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) { block() }
     }
 
+    /** /agnesapi 挂在根域名（非 /v1 下），剥离 base 的 /v1 后缀 */
+    private fun rootPath(path: String): String {
+        val root = baseUrl.trimEnd('/').removeSuffix("/v1")
+        return if (path.startsWith("/")) "$root$path" else "$root/$path"
+    }
+
+    /** 轮询视频状态：优先 /agnesapi?video_id=，失败降级 /v1/videos/{id} */
+    private suspend fun fetchVideoStatus(taskId: String): String {
+        return runCatching {
+            val q = "video_id=" + java.net.URLEncoder.encode(taskId, "UTF-8") +
+                "&model_name=" + java.net.URLEncoder.encode(MODEL_VIDEO, "UTF-8")
+            getJson(rootPath("/agnesapi?$q"))
+        }.getOrElse { getJson(url("/videos/$taskId")) }
+    }
+
     // ===== 解析 =====
 
     internal fun parseChatContent(resp: String): String {
@@ -189,8 +218,10 @@ class AgnesProvider(
 
     internal fun parseVideoTaskId(resp: String): String? {
         val obj = runCatching { JsonParser.parseString(resp).asJsonObject }.getOrNull() ?: return null
-        return obj.get("id")?.asString
+        // 官方 CLI 优先级：video_id > task_id > id
+        return obj.get("video_id")?.asString
             ?: obj.get("task_id")?.asString
+            ?: obj.get("id")?.asString
             ?: obj.get("data")?.takeIf { it.isJsonObject }?.asJsonObject?.get("id")?.asString
     }
 
@@ -202,7 +233,10 @@ class AgnesProvider(
 
     internal fun parseVideoUrl(resp: String): String? {
         val obj = runCatching { JsonParser.parseString(resp).asJsonObject }.getOrNull() ?: return null
+        // 官方 CLI：优先 url，次选 remixed_from_video_id
         obj.get("url")?.asString?.let { return it }
+        obj.get("remixed_from_video_id")?.asString?.let { return it }
+        obj.get("video_url")?.asString?.let { return it }
         obj.get("video")?.asString?.let { return it }
         obj.get("output_url")?.asString?.let { return it }
         obj.getAsJsonArray("data")?.get(0)?.asJsonObject?.get("url")?.asString?.let { return it }

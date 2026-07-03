@@ -16,7 +16,7 @@
             app:iconSpaceReserved="false" />
 
         <io.legado.app.lib.prefs.EditTextPreference
-            android:defaultValue="https://api.agnes-ai.com/v1"
+            android:defaultValue="https://apihub.agnes-ai.com/v1"
             android:key="agnesBaseUrl"
             android:summary="@string/video_gen_base_url_s"
             android:title="@string/video_gen_agnes_base_url"
