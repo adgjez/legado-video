@@ -126,7 +126,7 @@ class VideoGenActivity : BaseActivity<ActivityVideoGenBinding>() {
     private fun uriForPath(path: String): Uri {
         val file = File(path)
         return if (file.absolutePath.startsWith("/storage") || file.absolutePath.startsWith("/data")) {
-            FileProvider.getUriForFile(this, "${packageName}.fileProvider", file)
+            FileProvider.getUriForFile(this, io.legado.app.constant.AppConst.authority, file)
         } else {
             Uri.parse(path)
         }
