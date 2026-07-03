@@ -214,6 +214,8 @@ dependencies {
     implementation(libs.media3.datasource.okhttp)
     // For exposing and controlling media sessions
     //implementation "androidx.media3:media3-session:$media3_version"
+    // For video composition (transcoding/concatenating generated shots)
+    implementation(libs.media3.transformer)
 
     //videoPlayer
     implementation(libs.gsyVideoPlayer.java)

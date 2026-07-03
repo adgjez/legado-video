@@ -182,6 +182,14 @@ object PreferKey {
     const val paddingDisplayCutouts = "paddingDisplayCutouts"
     const val autoCheckNewBackup = "autoCheckNewBackup"
 
+    // 视频生成
+    const val agnesApiKey = "agnesApiKey"
+    const val agnesBaseUrl = "agnesBaseUrl"
+    const val videoGenProvider = "videoGenProvider"
+    const val videoGenImageSize = "videoGenImageSize"
+    const val videoGenConcurrency = "videoGenConcurrency"
+    const val videoGenTargetDuration = "videoGenTargetDuration"
+
     const val dThemeName = "durThemeName"
     const val dNThemeName = "durThemeNameNight"
 
