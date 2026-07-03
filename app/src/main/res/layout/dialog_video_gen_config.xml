@@ -12,11 +12,22 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:paddingBottom="12dp"
+        android:paddingBottom="4dp"
         android:text="@string/video_gen_config"
         android:textColor="@color/primaryText"
         android:textSize="18sp"
         android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tv_book_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingBottom="12dp"
+        android:textColor="@color/secondaryText"
+        android:textSize="13sp"
+        android:maxLines="1"
+        android:ellipsize="end" />
 
     <TextView
         android:layout_width="match_parent"

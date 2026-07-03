@@ -51,21 +51,23 @@ class AgnesProvider(
         model: String?
     ): String {
         requireKey()
+        val arr = com.google.gson.JsonArray()
+        // 若要求 JSON 输出，先放 system 约束消息
+        if (jsonSchema != null) {
+            arr.add(JsonObject().apply {
+                addProperty("role", "system")
+                addProperty("content", "严格按 JSON 格式输出，不要 markdown 代码块。Schema: $jsonSchema")
+            })
+        }
+        messages.forEach { m ->
+            arr.add(JsonObject().apply {
+                addProperty("role", m.role)
+                addProperty("content", m.content)
+            })
+        }
         val body = JsonObject().apply {
             addProperty("model", model ?: MODEL_LLM)
-            val arr = com.google.gson.JsonArray()
-            messages.forEach { m ->
-                arr.add(JsonObject().apply {
-                    addProperty("role", m.role)
-                    addProperty("content", m.content)
-                })
-            }
-            // 若要求 JSON 输出，追加 system 约束 + response_format
             if (jsonSchema != null) {
-                arr.add(0, JsonObject().apply {
-                    addProperty("role", "system")
-                    addProperty("content", "严格按 JSON 格式输出，不要 markdown 代码块。Schema: $jsonSchema")
-                })
                 add("response_format", JsonObject().apply { addProperty("type", "json_object") })
             }
             add("messages", arr)

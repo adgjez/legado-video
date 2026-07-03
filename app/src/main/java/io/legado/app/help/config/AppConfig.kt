@@ -455,18 +455,19 @@ object AppConfig : SharedPreferences.OnSharedPreferenceChangeListener {
 
     var agnesBaseUrl: String
         get() = appCtx.getPrefString(PreferKey.agnesBaseUrl, "https://api.agnes-ai.com/v1")
+            ?: "https://api.agnes-ai.com/v1"
         set(value) {
             appCtx.putPrefString(PreferKey.agnesBaseUrl, value)
         }
 
     var videoGenProvider: String
-        get() = appCtx.getPrefString(PreferKey.videoGenProvider, "agnes")
+        get() = appCtx.getPrefString(PreferKey.videoGenProvider, "agnes") ?: "agnes"
         set(value) {
             appCtx.putPrefString(PreferKey.videoGenProvider, value)
         }
 
     var videoGenImageSize: String
-        get() = appCtx.getPrefString(PreferKey.videoGenImageSize, "1280x720")
+        get() = appCtx.getPrefString(PreferKey.videoGenImageSize, "1280x720") ?: "1280x720"
         set(value) {
             appCtx.putPrefString(PreferKey.videoGenImageSize, value)
         }
