@@ -1195,6 +1195,24 @@ class ReadBookActivity : BaseReadBookActivity(),
     }
 
     /**
+     * 打开视频生成配置对话框（阅读页入口：当前章节/选中文本/章节范围）
+     */
+    override fun openVideoGen() {
+        val book = ReadBook.book ?: return
+        val total = ReadBook.simulatedChapterSize
+        val selection = selectedText.takeIf { it.isNotBlank() }
+        showDialogFragment(
+            io.legado.app.video.ui.VideoGenConfigDialog.args(
+                book = book,
+                entryMode = "read",
+                selectedText = selection,
+                currentChapterIndex = ReadBook.durChapterIndex,
+                totalChapters = total
+            )
+        )
+    }
+
+    /**
      * 打开搜索界面
      */
     override fun openSearchActivity(searchWord: String?) {

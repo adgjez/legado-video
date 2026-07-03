@@ -563,6 +563,13 @@ class ReadMenu @JvmOverloads constructor(
             ThemeConfig.applyDayNight(context)
         }
 
+        //生成视频
+        fabVideoGen.setOnClickListener {
+            runMenuOut {
+                callBack.openVideoGen()
+            }
+        }
+
         //上一章
         tvPre.setOnClickListener { ReadBook.moveToPrevChapter(upContent = true, toLast = false) }
 
@@ -693,6 +700,7 @@ class ReadMenu @JvmOverloads constructor(
         fun skipToChapter(index: Int)
         fun onMenuShow()
         fun onMenuHide()
+        fun openVideoGen()
     }
 
 }

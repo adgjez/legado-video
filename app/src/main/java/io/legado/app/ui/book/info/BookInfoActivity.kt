@@ -790,6 +790,19 @@ class BookInfoActivity :
                 }
             }
         }
+        tvVideoGen.setOnClickListener {
+            viewModel.getBook()?.let { book ->
+                showDialogFragment(
+                    io.legado.app.video.ui.VideoGenConfigDialog.args(
+                        book = book,
+                        entryMode = "info",
+                        currentChapterIndex = book.durChapterIndex,
+                        totalChapters = viewModel.chapterListData.value?.size
+                            ?: appDb.bookChapterDao.getChapterCount(book.bookUrl)
+                    )
+                )
+            }
+        }
         tvOrigin.setOnClickListener {
             viewModel.getBook()?.let { book ->
                 if (book.isLocal) return@let
